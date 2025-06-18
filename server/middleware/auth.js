@@ -1,6 +1,6 @@
 
 import jwt from "jsonwebtoken";
-import User from "../models/User";
+import User from "../models/User.js";
 
 //Middleware to check if the user is authenticated
 
