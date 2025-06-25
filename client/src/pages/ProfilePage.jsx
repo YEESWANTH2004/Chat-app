@@ -1,19 +1,34 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/chat-app-assets/assets';
+import { AuthContext } from '../../context/AuthContext';
 
 const ProfilePage = () => {
 
+  const {authUser, updateProfile} = useContext(AuthContext);
+
   const [selectedImg, setSelectedImg] = useState(null);
  const navigate = useNavigate();
- const [name, setName] = useState('');
- const [bio, setBio] = useState('Hi there! I am using Chat App!!');
+ const [name, setName] = useState(authUser.fullname);
+ const [bio, setBio] = useState(authUser.bio);
 
 
  const handleSubmit = async (e) => {
   e.preventDefault();
+  if(!selectedImg){
+    await updateProfile({fullname: name, bio});
+     navigate('/');
+     return;
+  }
+
+ const reader = new FileReader();
+ reader.readAsDataURL(selectedImg);
+ reader.onload = async() =>{
+  const base64Image = reader.result;
+  await updateProfile({profilePic: base64Image, fullname: name, bio})
   navigate('/');
+ }
 }
 
   return (
@@ -33,7 +48,7 @@ const ProfilePage = () => {
           placeholder='Write profile bio' required className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500' rows={4}></textarea>
           <button type='submit' className='bg-gradient-to-r from-purple-400 to-violet-600 rounded-full p-2 text-white text-lg cursor-pointer'>Save</button>
         </form>
-        <img src={assets.logo_icon} alt="" className='max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10' />
+        <img src={authUser?.profilePic || assets.logo_icon} alt="" className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImg && 'rounded-full'}`} />
       </div>
     </div>  
   )

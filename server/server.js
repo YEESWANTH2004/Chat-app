@@ -25,7 +25,7 @@ export const userSocketMap = {};
 
 //Socket.io connection
 io.on("connection", (socket) =>{
-    const {userId} = socket.handshake.query.userId;
+    const {userId} = socket.handshake.query;
     console.log(`User connected: ${userId}`);
 
     if(userId){
@@ -52,7 +52,7 @@ app.use(cors());
 //Routes setup
 app.use("/api/status", (req,res)=> res.send("Server is running"));
 app.use("/api/auth", userRouter)
-app.use("api/messages",messageRouter)
+app.use("/api/messages",messageRouter)
 //Connect to MongoDB
 await connectDB();
 

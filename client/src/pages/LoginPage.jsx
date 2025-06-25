@@ -1,21 +1,28 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { assets } from '../assets/chat-app-assets/assets'
+import { AuthContext } from '../../context/AuthContext'
 
 const LoginPage = () => {
 
   const [currState, setCurrState] = useState('Sign up')
-  const [fullName, setFullName] = useState('')
+  const [fullname, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [bio, setBio] = useState('')
-  const [isDataSubmitted, setIsDataSubmitted] = useState(false)
+  const [isDataSubmitted, setIsDataSubmitted] = useState(false);
+
+  const {login} = useContext(AuthContext)
+
   const onSubmitHandler = (event) => {
-    event.preventDefault()
+    event.preventDefault();
+
     if (currState === 'Sign up' && !isDataSubmitted) {
       // Handle sign up logic here
       setIsDataSubmitted(true)
       return;
     } 
+
+    login(currState === "Sign up" ? 'signup' : 'login' , {fullname,email,password,bio})
   }
 
 
@@ -34,7 +41,7 @@ const LoginPage = () => {
        
       </h2>
 { currState === 'Sign up' && !isDataSubmitted && (
-  <input onChange={(e) => setFullName(e.target.value)} value={fullName}
+  <input onChange={(e) => setFullName(e.target.value)} value={fullname}
   type="text" placeholder='Username' className='p-2 border border-gray-500 rounded-md focus-outline-none' required/>
   )}
 
@@ -51,7 +58,7 @@ const LoginPage = () => {
   {
   currState === 'Sign up' && isDataSubmitted && (
     <textarea onChange={(e) => setBio(e.target.value)} value={bio}
-    placeholder='Bio' rows={4} className='p-2 border border-gray-500 rounded-md focus-outline-none focus:ring-2 focus:ring-indigo-500' required></textarea>
+    placeholder='Bio' rows={4} className='p-2 border border-gray-500 rounded-md focus-outline-none focus:ring-2 focus:ring-indigo-500' required></textarea> 
   )
   }
   <button type='submit' className='bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light py-2 px-20 rounded-full cursor-pointer'>
